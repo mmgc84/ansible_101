@@ -3,10 +3,9 @@
   hosts: centos
   force_handlers: true
 
-  vars:
-    proxy_vars:
-      http_proxy: http://proxy.bos.example.com:8080
-      https_proxy: https://proxy.bos.example.com:8443
+  environment:
+    http_proxy: http://proxy.bos.example.com:8080
+    https_proxy: https://proxy.bos.example.com:8443
 
   handlers:
     - name: reload apache
@@ -28,7 +27,6 @@
         dest: ~/5MB.zip
         use_proxy: false
         force: false
-      environment: "{{ proxy_vars }}"
       become: false
 
     - name: Add an environment variable to the remote user's shell
