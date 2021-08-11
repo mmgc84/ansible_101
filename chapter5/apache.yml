@@ -1,77 +1,42 @@
 ---
 - name: Install Apache
-  hosts: centos
+  hosts: all
   force_handlers: true
-
-  environment:
-    http_proxy: http://proxy.bos.example.com:8080
-    https_proxy: https://proxy.bos.example.com:8443
+  vars_files:
+    - "vars/apache_{{ ansible_os_family }}.yml"
 
   handlers:
     - name: reload apache
       service:
-        name: httpd
-        state: restarted
-      notify:
-        - restart memcached
-
-    - name: restart memcached
-      service:
-        name: memcached
+        name: "{{ apache_service }}"
         state: restarted
 
-  tasks:
-    - name: Download a file
-      get_url:
-        url: http://ipv4.download.thinkbroadband.com/5MB.zip
-        dest: ~/5MB.zip
-        use_proxy: false
-        force: false
-      become: false
+  # pre_tasks:
+  #   # - debug: var=ansible_os_family
+  #   - name: Load variable files
+  #     include_vars: "{{ item }}"
+  #     with_first_found:
+  #       - "vars/apache_{{ ansible_os_family }}.yml"
 
-    - name: Add an environment variable to the remote user's shell
-      lineinfile:
-        dest: "~/.bash_profile"
-        regexp: '^ENV_VAR='
-        line: 'ENV_VAR=value'
-      become: false
-
-    - name: Get the value of en environment variable
-      shell: 'source ~/.bash_profile && echo $ENV_VAR'
-      register: foo
-      become: false
-
-    - name: Debugger
-      debug:
-        msg: "The variable is {{ foo.stdout }}"
-
+  tasks:  
     - name: Ensure Apache is installed
-      yum:
-        name:
-          - httpd
+      package:
+        name: "{{ apache_package }}"
         state: present
-
-    # - name: Ensure Memcached is installed
-    #   yum:
-    #     name:
-    #       - memcached
-    #     state: present
+        update_cache: true
 
     - name: Copy test config file
       copy:
         src: files/test.conf
-        dest: /etc/httpd/conf.d/test.conf
+        dest: "{{ apache_config_dir }}/test.conf"
       notify:
         - reload apache
-        # - restart memcached
 
     - name: Make sure handlers are flushed immediately
       meta: flush_handlers
 
     - name: Ensure Apache is running and starts at boot
       service:
-        name: httpd
+        name: "{{ apache_service }}"
         state: started
         enabled: true
-
-    # - fail:
