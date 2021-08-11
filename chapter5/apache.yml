@@ -24,6 +24,9 @@
         name: "{{ apache_package }}"
         state: present
         update_cache: true
+      register: foo
+
+    - debug: var=foo
 
     - name: Copy test config file
       copy:
