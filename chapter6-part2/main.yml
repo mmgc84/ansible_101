@@ -16,4 +16,4 @@
   #       - "vars/apache_{{ ansible_os_family }}.yml"
 
   tasks:  
-    - import_tasks: tasks/apache.yml
+    - include_tasks: tasks/apache.yml
