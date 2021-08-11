@@ -1,0 +1,22 @@
+---
+- name: Ensure Apache is installed
+  package:
+    name: "{{ apache_package }}"
+    state: present
+    update_cache: true
+
+- name: Copy test config file
+  copy:
+    src: files/test.conf
+    dest: "{{ apache_config_dir }}/test.conf"
+  notify:
+    - reload apache
+
+- name: Make sure handlers are flushed immediately
+  meta: flush_handlers
+
+- name: Ensure Apache is running and starts at boot
+  service:
+    name: "{{ apache_service }}"
+    state: started
+    enabled: true

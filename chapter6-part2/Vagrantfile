@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "centos" do |centos|
+    centos.vm.box = "geerlingguy/centos7"
+
+    centos.ssh.insert_key = false
+    centos.vm.synced_folder ".", "/vagrant", disabled: true
+    centos.vm.provider :virtualbox do |v|
+      v.memory = 1024
+      v.linked_clone = true
+    end
+
+    centos.vm.hostname = "orc-centos.test"
+    centos.vm.network "private_network", ip: "192.168.60.10"
+  end
+
+  config.vm.define "ubuntu" do |ubuntu|
+    ubuntu.vm.box = "geerlingguy/ubuntu2004"
+
+    ubuntu.ssh.insert_key = false
+    ubuntu.vm.synced_folder ".", "/vagrant", disabled: true
+    ubuntu.vm.provider :virtualbox do |v|
+      v.memory = 1024
+      v.linked_clone = true
+    end
+
+    ubuntu.vm.hostname = "orc-ubuntu.test"
+    ubuntu.vm.network "private_network", ip: "192.168.60.11"
+  end
+end
