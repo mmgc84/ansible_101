@@ -1,0 +1,22 @@
+---
+- name: Install EPEL repo
+  package:
+    name: epel-release
+    state: present
+
+- name: permit traffic in default zone for http service
+  ansible.posix.firewalld:
+    service: http
+    permanent: true
+    state: enabled
+
+- name: Install Node.js and npm
+  package:
+    name: npm
+    enablerepo: epel
+
+- name: Install Forever (to run our Node.js app)
+  npm:
+    name: forever
+    global: yes
+    state: present
