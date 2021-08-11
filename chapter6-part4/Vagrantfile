@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+  config.vm.define "centos" do |centos|
+    centos.vm.box = "geerlingguy/centos7"
+
+    centos.ssh.insert_key = false
+    centos.vm.synced_folder ".", "/vagrant", disabled: true
+    centos.vm.provider :virtualbox do |v|
+      v.memory = 1024
+      v.linked_clone = true
+    end
+
+    centos.vm.hostname = "nodejs.test"
+    centos.vm.network "private_network", ip: "192.168.60.10"
+
+    # Ansible provisioner
+    centos.vm.provision :ansible do |ansible|
+      ansible.playbook = "main.yml"
+    end
+  end
+end
