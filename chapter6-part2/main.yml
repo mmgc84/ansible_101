@@ -17,3 +17,5 @@
 
   tasks:  
     - include_tasks: tasks/apache.yml
+
+- import_playbook: app.yml

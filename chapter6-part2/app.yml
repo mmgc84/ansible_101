@@ -1,0 +1,21 @@
+---
+- name: Install App
+  gather_facts: false
+  hosts: all
+
+  tasks:
+    - name: Install git
+      package:
+        name: git
+        state: present
+
+    - name: Cleans /var/www/html
+      file:
+        path: /var/www/html
+        state: absent
+
+    - name: Clone app into web root
+      git:
+        repo: 'https://github.com/mmgc84/Tribute_page.git'
+        dest: /var/www/html/
+        force: true
