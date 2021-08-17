@@ -1,0 +1,12 @@
+---
+- name: Install apache
+  yum:
+    name: httpd
+    state: present
+  register: yum
+
+- debug: var=yum
+
+- copy:
+    src: file.conf
+    dest: /etc/httpd/conf.d/welcome.conf
