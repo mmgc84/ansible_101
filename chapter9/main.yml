@@ -43,3 +43,16 @@
         line: 'johndoe ALL=(ALL) NOPASSWD: ALL'
         state: present
         validate: 'visudo -cf %s'
+
+    - name: Remove unused packages
+      package:
+        name:
+          - httpd
+          - nano
+          - mailutils
+        state: absent
+
+    - name: Edit file permissions
+      file:
+        path: /etc/ssh/sshd_config
+        mode: 0600
