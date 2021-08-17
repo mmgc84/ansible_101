@@ -35,6 +35,7 @@
           <body>Hello world!</body>
           </html>
         dest: "/var/www/html/index.html"
+        mode: 0644
       notify:
         - reload apache
 
@@ -43,4 +44,3 @@
         name: "{{ apache_service }}"
         state: started
         enabled: true
-
