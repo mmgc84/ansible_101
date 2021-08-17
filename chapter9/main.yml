@@ -1,0 +1,32 @@
+---
+- hosts: centos
+  become: true
+
+  handlers:
+    - name: restart_ssh
+      service:
+        name: sshd
+        state: restarted
+
+  tasks:
+    - name: Tell SELinux about SSH's new port
+      seport:
+        ports: 2849
+        proto: tcp
+        setype: ssh_port_t
+        state: present
+
+    - name: Make sure SSH is more secure
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        state: present
+      with_items:
+        - regexp: "^PasswordAuthentication"
+          line: "PasswordAuthentication no"
+        - regexp: "^PermitRootLogin"
+          line: "PermitRootLogin no"
+        - regexp: "^Port"
+          line: "Port 2849"
+      notify: restart_ssh
