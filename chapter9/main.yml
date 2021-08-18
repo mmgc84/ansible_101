@@ -77,3 +77,27 @@
         name: dnf-automatic-install.timer
         state: started
         enabled: true
+
+    - name: Install firewalld
+      package:
+        name: firewalld
+        state: present
+
+    - name: Ensure firewalld is running
+      service:
+        name: firewalld
+        state: started
+        enabled: true
+
+    - name: Configure ports in firewall
+      firewalld:
+        state: "{{ item.state }}"
+        port: "{{ item.port }}"
+        zone: external
+        immediate: true
+        permanent: true
+      with_items:
+        - {state: 'enabled', port: 2849/tcp}
+        - {state: 'enabled', port: 123/udp}
+
+
