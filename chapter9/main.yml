@@ -22,13 +22,13 @@
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         state: present
-        validate: 'ssh -T -f %s'
+        # validate: 'ssh -T -f %s'
       with_items:
         - regexp: "^PasswordAuthentication"
           line: "PasswordAuthentication no"
         - regexp: "^PermitRootLogin"
           line: "PermitRootLogin no"
-        - regexp: "^Port"
+        - regexp: "^#Port"
           line: "Port 2849"
       notify: restart_ssh
 
@@ -56,3 +56,24 @@
       file:
         path: /etc/ssh/sshd_config
         mode: 0600
+
+    # - name: Make sure everything is up to date on RehHat Family
+    #   yum:
+    #     name: '*'
+    #     state: latest
+
+    # - name: Make sure everything is up to date on Debian Family
+    #   package:
+    #     upgrade: dist
+    #     update_cache: yes
+
+    - name: Set up autoupdates
+      yum:
+        name: dnf-automatic
+        state: present
+
+    - name: Ensure auto updates are running
+      service:
+        name: dnf-automatic-install.timer
+        state: started
+        enabled: true
