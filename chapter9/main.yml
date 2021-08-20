@@ -36,9 +36,15 @@
       user:
         name: johndoe
 
+    - name: Add sudoers file for johndoe
+      ansible.builtin.file:
+        path: /etc/sudoers.d/johndoe
+        state: touch
+        mode: 0440
+
     - name: Add sudo group rights for deployment user
       lineinfile:
-        dest: /etc/sudoers
+        dest: /etc/sudoers.d/johndoe
         regexp: "^johndoe"
         line: 'johndoe ALL=(ALL) NOPASSWD: ALL'
         state: present
