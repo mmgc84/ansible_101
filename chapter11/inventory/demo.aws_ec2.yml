@@ -1,0 +1,15 @@
+---
+plugin: aws_ec2
+
+boto_profile: mmgc84
+
+regions:
+  - us-east-1
+
+keyed_groups:
+  - key: tags.group
+    separator: ''
+
+hostsnames:
+  - network-interface.association.public-ip
+  - private-ip-address  # When using a bastion
